@@ -2,10 +2,10 @@
     "name": "iadil/symfony-boost",
     "description": "Symfony Boost accelerates AI-assisted development by providing the essential context and structure that AI needs to generate high-quality, Symfony-specific code.",
     "keywords": [
-        "dev",
         "symfony",
         "ai",
-        "mcp"
+        "mcp",
+        "boost"
     ],
     "homepage": "https://github.com/iadil/symfony-boost",
     "license": "MIT",
