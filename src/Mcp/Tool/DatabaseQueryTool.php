@@ -16,7 +16,7 @@ class DatabaseQueryTool
     ) {
     }
 
-    public function __invoke(string $query, ?string $database = null): string
+    public function __invoke(string $query, ?string $database = null, int $limit = 100): string
     {
         $query = trim($query);
         $token = strtok(ltrim($query), " \t\n\r");
@@ -64,9 +64,15 @@ class DatabaseQueryTool
                 ? $this->connectionRegistry->getConnection($database)
                 : $this->connectionRegistry->getConnection($this->connectionRegistry->getDefaultConnectionName());
 
-            $result = $connection->executeQuery($query);
+            // Auto-add LIMIT if not present and query is SELECT
+            if (strtoupper(substr(trim($query), 0, 6)) === 'SELECT' && !preg_match('/\bLIMIT\b/i', $query)) {
+                $query = rtrim($query, "; \t\n\r")." LIMIT {$limit}";
+            }
 
-            return json_encode($result->fetchAllAssociative(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+            $result = $connection->executeQuery($query);
+            $rows = $result->fetchAllAssociative();
+
+            return json_encode($rows, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES);
         } catch (\Throwable $throwable) {
             return 'Query failed: '.$throwable->getMessage();
         }

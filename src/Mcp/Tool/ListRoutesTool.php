@@ -15,7 +15,7 @@ class ListRoutesTool
     ) {
     }
 
-    public function __invoke(?string $filter = null): string
+    public function __invoke(?string $filter = null, int $limit = 50, int $offset = 0): string
     {
         $routes = [];
 
@@ -37,6 +37,21 @@ class ListRoutesTool
 
         usort($routes, fn (array $a, array $b) => $a['name'] <=> $b['name']);
 
-        return json_encode($routes, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $total = \count($routes);
+        $routes = \array_slice($routes, $offset, $limit);
+
+        $result = [
+            'total' => $total,
+            'showing' => \count($routes),
+            'offset' => $offset,
+            'limit' => $limit,
+            'routes' => $routes,
+        ];
+
+        if ($total > $offset + $limit) {
+            $result['hint'] = "Showing {$offset}-".($offset + \count($routes))." of {$total}. Use offset=".($offset + $limit)." to see more, or use filter to narrow results.";
+        }
+
+        return json_encode($result, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES);
     }
 }
