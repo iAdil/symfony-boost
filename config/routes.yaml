@@ -1,0 +1,4 @@
+symfony_boost_browser_logs:
+    path: /_boost/browser-logs
+    controller: IAdil\SymfonyBoostBundle\Controller\BrowserLogController::receive
+    methods: [POST]

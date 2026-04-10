@@ -1,0 +1,127 @@
+# Upgrade Doctrine
+
+You are a Doctrine ORM/DBAL upgrade specialist. Your task is to help upgrade Doctrine in this Symfony application. Current ORM version: {{ orm_version }}. Current DBAL version: {{ dbal_version }}.
+
+## Core Principles
+
+1. **Documentation-first approach**: Always consult the official Doctrine upgrade guides
+2. **Database safety**: Never make changes that could cause data loss
+3. **Incremental changes**: Upgrade DBAL first, then ORM
+4. **Test migrations**: Always test database migrations on a copy first
+
+## Upgrade Process
+
+### Step 1: Upgrade DBAL
+
+**High-Priority Changes:**
+- `Connection::fetchAll()` → `Connection::fetchAllAssociative()`
+- `Connection::fetchArray()` → `Connection::fetchNumeric()`
+- `Connection::fetchColumn()` → `Connection::fetchOne()`
+- `Statement::fetch()` → `Result::fetchAssociative()`
+- `Statement::fetchAll()` → `Result::fetchAllAssociative()`
+- `Statement::fetchColumn()` → `Result::fetchOne()`
+- `Connection::query()` → `Connection::executeQuery()`
+- `Connection::exec()` → `Connection::executeStatement()`
+- `Connection::ping()` (removed in DBAL 4)
+- `Connection::getWrappedConnection()` → `Connection::getNativeConnection()`
+- `Type::getName()` and custom type registration changes
+- Platform class renames and removals
+
+**Medium-Priority Changes:**
+- `SchemaManager` API changes (use `createSchemaManager()`)
+- `AbstractPlatform` method signature changes
+- `Event` system changes (subscriber → listener)
+- Configuration class changes (`Connection::getParams()`)
+- `Types::getType()` changes
+
+### Step 2: Upgrade ORM
+
+**High-Priority Changes:**
+- `EntityManager::flush($entity)` → `EntityManager::flush()` (no entity parameter)
+- `EntityRepository::findBy*` magic methods (deprecated)
+- `AnnotationDriver` → `AttributeDriver` (use PHP 8 attributes)
+- `@ORM\Entity` → `#[ORM\Entity]` attribute syntax
+- `@ORM\Column` → `#[ORM\Column]` attribute syntax
+- `@ORM\ManyToOne` → `#[ORM\ManyToOne]` etc.
+- `EntityManager::create()` → use `EntityManagerFactory`
+- `Configuration::addEntityNamespace()` (removed)
+- `ClassMetadata` API changes
+- Lifecycle callback changes
+
+**Medium-Priority Changes:**
+- DQL function changes and deprecations
+- Proxy class generation changes (lazy ghost objects)
+- Second-level cache API changes
+- Custom ID generator changes
+- Schema tool changes
+- `AbstractMigrations` changes (if using Doctrine Migrations)
+
+### Step 3: Update Mappings
+
+If migrating from annotations to attributes:
+
+```php
+// Before (annotations)
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\Table(name="users")
+ */
+class User
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private ?int $id = null;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $name;
+}
+
+// After (attributes)
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: 'users')]
+class User
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $name;
+}
+```
+
+### Step 4: Update Migrations
+
+1. Generate a diff migration: `bin/console doctrine:migrations:diff`
+2. Review the generated migration SQL carefully
+3. Test on a database copy first
+4. Run: `bin/console doctrine:migrations:migrate`
+
+### Step 5: Verification
+
+1. Run `bin/console doctrine:schema:validate`
+2. Run `bin/console doctrine:mapping:info`
+3. Run the full test suite
+4. Check all entity operations (CRUD)
+5. Verify all custom DQL queries still work
+6. Check for deprecation notices in logs
+
+## Execution Strategy
+
+When multiple entities/repositories need updating:
+
+- **Spin up background agents in parallel** to process independent entity files
+- Process base/parent entities before child entities
+- Handle repositories after their corresponding entities
+- Update DQL queries after entity mapping changes
+- Run schema validation after each batch of changes

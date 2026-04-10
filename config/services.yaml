@@ -1,0 +1,179 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # Core Services
+    iadil_symfony_boost.log_reader:
+        class: IAdil\SymfonyBoostBundle\Service\LogReader
+        arguments:
+            $logsDir: '%kernel.logs_dir%'
+            $environment: '%kernel.environment%'
+
+    iadil_symfony_boost.package_discovery:
+        class: IAdil\SymfonyBoostBundle\Service\PackageDiscovery
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    iadil_symfony_boost.browser_logger:
+        class: IAdil\SymfonyBoostBundle\Service\BrowserLogger
+
+    # MCP Tools
+    iadil_symfony_boost.mcp.tool.application_info:
+        class: IAdil\SymfonyBoostBundle\Mcp\Tool\ApplicationInfoTool
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+        tags: ['mcp.tool']
+
+    iadil_symfony_boost.mcp.tool.browser_logs:
+        class: IAdil\SymfonyBoostBundle\Mcp\Tool\BrowserLogsTool
+        arguments:
+            $logsDir: '%kernel.logs_dir%'
+        tags: ['mcp.tool']
+
+    iadil_symfony_boost.mcp.tool.database_connections:
+        class: IAdil\SymfonyBoostBundle\Mcp\Tool\DatabaseConnectionsTool
+        tags: ['mcp.tool']
+
+    iadil_symfony_boost.mcp.tool.database_query:
+        class: IAdil\SymfonyBoostBundle\Mcp\Tool\DatabaseQueryTool
+        tags: ['mcp.tool']
+
+    iadil_symfony_boost.mcp.tool.database_schema:
+        class: IAdil\SymfonyBoostBundle\Mcp\Tool\DatabaseSchemaTool
+        tags: ['mcp.tool']
+
+    iadil_symfony_boost.mcp.tool.get_absolute_url:
+        class: IAdil\SymfonyBoostBundle\Mcp\Tool\GetAbsoluteUrlTool
+        tags: ['mcp.tool']
+
+    iadil_symfony_boost.mcp.tool.last_error:
+        class: IAdil\SymfonyBoostBundle\Mcp\Tool\LastErrorTool
+        tags: ['mcp.tool']
+
+    iadil_symfony_boost.mcp.tool.read_log_entries:
+        class: IAdil\SymfonyBoostBundle\Mcp\Tool\ReadLogEntriesTool
+        tags: ['mcp.tool']
+
+    iadil_symfony_boost.mcp.tool.search_docs:
+        class: IAdil\SymfonyBoostBundle\Mcp\Tool\SearchDocsTool
+        arguments:
+            $apiUrl: '%iadil_symfony_boost.hosted.api_url%'
+        tags: ['mcp.tool']
+
+    # MCP Prompts
+    iadil_symfony_boost.mcp.prompt.code_simplifier:
+        class: IAdil\SymfonyBoostBundle\Mcp\Prompt\SymfonyCodeSimplifierPrompt
+        tags: ['mcp.prompt']
+
+    iadil_symfony_boost.mcp.prompt.upgrade_symfony8:
+        class: IAdil\SymfonyBoostBundle\Mcp\Prompt\UpgradeSymfony8Prompt
+        tags: ['mcp.prompt']
+
+    iadil_symfony_boost.mcp.prompt.upgrade_twig:
+        class: IAdil\SymfonyBoostBundle\Mcp\Prompt\UpgradeTwigPrompt
+        tags: ['mcp.prompt']
+
+    iadil_symfony_boost.mcp.prompt.upgrade_doctrine:
+        class: IAdil\SymfonyBoostBundle\Mcp\Prompt\UpgradeDoctrinePrompt
+        tags: ['mcp.prompt']
+
+    # MCP Resource
+    iadil_symfony_boost.mcp.resource.application_info:
+        class: IAdil\SymfonyBoostBundle\Mcp\Resource\ApplicationInfoResource
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+        tags: ['mcp.resource']
+
+    # Database Schema
+    iadil_symfony_boost.schema_driver_factory:
+        class: IAdil\SymfonyBoostBundle\Mcp\DatabaseSchema\SchemaDriverFactory
+
+    # Event Listener
+    iadil_symfony_boost.event_listener.inject_browser_logger:
+        class: IAdil\SymfonyBoostBundle\EventListener\InjectBrowserLoggerListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, priority: -128 }
+
+    # Controller
+    iadil_symfony_boost.controller.browser_log:
+        class: IAdil\SymfonyBoostBundle\Controller\BrowserLogController
+        tags: ['controller.service_arguments']
+
+    # Console Commands
+    iadil_symfony_boost.command.start:
+        class: IAdil\SymfonyBoostBundle\Console\StartCommand
+        tags: ['console.command']
+
+    iadil_symfony_boost.command.install:
+        class: IAdil\SymfonyBoostBundle\Console\InstallCommand
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+        tags: ['console.command']
+
+    iadil_symfony_boost.command.update:
+        class: IAdil\SymfonyBoostBundle\Console\UpdateCommand
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+        tags: ['console.command']
+
+    iadil_symfony_boost.command.add_skill:
+        class: IAdil\SymfonyBoostBundle\Console\AddSkillCommand
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+        tags: ['console.command']
+
+    # Install Services
+    iadil_symfony_boost.install.agents_detector:
+        class: IAdil\SymfonyBoostBundle\Install\AgentsDetector
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    iadil_symfony_boost.install.guideline_assist:
+        class: IAdil\SymfonyBoostBundle\Install\GuidelineAssist
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    iadil_symfony_boost.install.guideline_composer:
+        class: IAdil\SymfonyBoostBundle\Install\GuidelineComposer
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    iadil_symfony_boost.install.guideline_writer:
+        class: IAdil\SymfonyBoostBundle\Install\GuidelineWriter
+
+    iadil_symfony_boost.install.skill_composer:
+        class: IAdil\SymfonyBoostBundle\Install\SkillComposer
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    iadil_symfony_boost.install.skill_writer:
+        class: IAdil\SymfonyBoostBundle\Install\SkillWriter
+
+    iadil_symfony_boost.install.mcp_writer:
+        class: IAdil\SymfonyBoostBundle\Install\McpWriter
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    # Support
+    iadil_symfony_boost.support.config:
+        class: IAdil\SymfonyBoostBundle\Support\Config
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    iadil_symfony_boost.support.composer:
+        class: IAdil\SymfonyBoostBundle\Support\Composer
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    iadil_symfony_boost.support.npm:
+        class: IAdil\SymfonyBoostBundle\Support\Npm
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    # Skills Remote
+    iadil_symfony_boost.skills.github_skill_provider:
+        class: IAdil\SymfonyBoostBundle\Skills\Remote\GitHubSkillProvider
+
+    iadil_symfony_boost.skills.skill_auditor:
+        class: IAdil\SymfonyBoostBundle\Skills\Remote\SkillAuditor
