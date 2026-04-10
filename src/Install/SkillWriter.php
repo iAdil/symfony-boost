@@ -69,35 +69,8 @@ class SkillWriter
             mkdir($targetDir, 0755, true);
         }
 
-        // Create symlink or copy
-        if (\function_exists('symlink') && \PHP_OS_FAMILY !== 'Windows') {
-            $this->symlinkSkill($skill->path, $targetDir);
-        } else {
-            $this->copyDirectory($skill->path, $targetDir);
-        }
-    }
-
-    private function symlinkSkill(string $source, string $target): void
-    {
-        $iterator = new \DirectoryIterator($source);
-
-        foreach ($iterator as $entry) {
-            if ($entry->isDot()) {
-                continue;
-            }
-
-            $targetPath = $target.\DIRECTORY_SEPARATOR.$entry->getFilename();
-
-            if (file_exists($targetPath) || is_link($targetPath)) {
-                if (is_link($targetPath)) {
-                    unlink($targetPath);
-                } else {
-                    continue;
-                }
-            }
-
-            symlink($entry->getPathname(), $targetPath);
-        }
+        // Always copy — symlinks break in Docker/Vagrant/WSL environments
+        $this->copyDirectory($skill->path, $targetDir);
     }
 
     private function copyDirectory(string $source, string $target): void
