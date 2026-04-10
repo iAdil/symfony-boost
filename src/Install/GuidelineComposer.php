@@ -26,6 +26,13 @@ class GuidelineComposer
     {
         $guidelines = [];
 
+        // 0. Built-in Symfony Boost guidelines
+        $builtInDir = \dirname(__DIR__, 2).'/resources/guidelines';
+
+        if (is_dir($builtInDir)) {
+            $guidelines = array_merge($guidelines, $this->readGuidelinesFromDirectory($builtInDir, 'symfony-boost'));
+        }
+
         // 1. Discover from vendor packages (Composer)
         $composerGuidelines = $this->composer->getInstalledPackagesWithBoostGuidelines();
 
