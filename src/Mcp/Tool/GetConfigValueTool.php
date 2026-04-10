@@ -15,7 +15,7 @@ class GetConfigValueTool
     ) {
     }
 
-    public function __invoke(string $key): array|string
+    public function __invoke(string $key): string
     {
         if (!$this->parameterBag->has($key)) {
             return "Error: Parameter '{$key}' does not exist.";
@@ -23,6 +23,6 @@ class GetConfigValueTool
 
         $value = $this->parameterBag->get($key);
 
-        return ['key' => $key, 'value' => $value];
+        return json_encode(['key' => $key, 'value' => $value], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 }

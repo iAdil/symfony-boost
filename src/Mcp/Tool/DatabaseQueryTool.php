@@ -16,7 +16,7 @@ class DatabaseQueryTool
     ) {
     }
 
-    public function __invoke(string $query, ?string $database = null): array|string
+    public function __invoke(string $query, ?string $database = null): string
     {
         $query = trim($query);
         $token = strtok(ltrim($query), " \t\n\r");
@@ -66,7 +66,7 @@ class DatabaseQueryTool
 
             $result = $connection->executeQuery($query);
 
-            return $result->fetchAllAssociative();
+            return json_encode($result->fetchAllAssociative(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         } catch (\Throwable $throwable) {
             return 'Query failed: '.$throwable->getMessage();
         }

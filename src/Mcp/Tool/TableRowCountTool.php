@@ -16,7 +16,7 @@ class TableRowCountTool
     ) {
     }
 
-    public function __invoke(?string $database = null, ?string $filter = null): array|string
+    public function __invoke(?string $database = null, ?string $filter = null): string
     {
         if ($this->connectionRegistry === null) {
             return 'Error: No database connection registry available.';
@@ -48,7 +48,7 @@ class TableRowCountTool
 
             arsort($counts);
 
-            return $counts;
+            return json_encode($counts, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         } catch (\Throwable $e) {
             return 'Error: '.$e->getMessage();
         }

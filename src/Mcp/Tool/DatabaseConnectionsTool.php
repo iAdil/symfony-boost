@@ -15,18 +15,18 @@ class DatabaseConnectionsTool
     ) {
     }
 
-    public function __invoke(): array
+    public function __invoke(): string
     {
         if ($this->connectionRegistry === null) {
-            return [
+            return json_encode([
                 'default_connection' => null,
                 'connections' => [],
-            ];
+            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         }
 
-        return [
+        return json_encode([
             'default_connection' => $this->connectionRegistry->getDefaultConnectionName(),
             'connections' => $this->connectionRegistry->getConnectionNames(),
-        ];
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 }

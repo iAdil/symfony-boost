@@ -19,7 +19,7 @@ class ApplicationInfoTool
     ) {
     }
 
-    public function __invoke(): array
+    public function __invoke(): string
     {
         $entities = [];
 
@@ -44,13 +44,13 @@ class ApplicationInfoTool
             ];
         }
 
-        return [
+        return json_encode([
             'php_version' => \PHP_MAJOR_VERSION.'.'.\PHP_MINOR_VERSION,
             'symfony_version' => Kernel::VERSION,
             'database_engine' => $this->detectDatabaseEngine(),
             'packages' => $packages,
             'entities' => $entities,
-        ];
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 
     private function detectDatabaseEngine(): string

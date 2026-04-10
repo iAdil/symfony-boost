@@ -26,7 +26,7 @@ class DatabaseSchemaTool
         bool $include_views = false,
         bool $include_routines = false,
         bool $include_column_details = false,
-    ): array|string {
+    ): string {
         if ($this->connectionRegistry === null) {
             return 'Error: No database connection registry available.';
         }
@@ -46,7 +46,7 @@ class DatabaseSchemaTool
             ];
 
             if ($summary) {
-                return $result;
+                return json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
             }
 
             if ($include_views) {
@@ -61,7 +61,7 @@ class DatabaseSchemaTool
                 ];
             }
 
-            return $result;
+            return json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         } catch (\Throwable $throwable) {
             return 'Error: '.$throwable->getMessage();
         }

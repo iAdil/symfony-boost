@@ -15,7 +15,7 @@ class ListBundlesTool
     ) {
     }
 
-    public function __invoke(): array
+    public function __invoke(): string
     {
         $bundles = [];
 
@@ -29,6 +29,6 @@ class ListBundlesTool
 
         usort($bundles, fn (array $a, array $b) => $a['name'] <=> $b['name']);
 
-        return $bundles;
+        return json_encode($bundles, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 }

@@ -9,7 +9,7 @@ use Mcp\Capability\Attribute\McpTool;
 #[McpTool(name: 'list-env-vars')]
 class ListEnvVarsTool
 {
-    public function __invoke(?string $filter = null): array
+    public function __invoke(?string $filter = null): string
     {
         $envFile = $_SERVER['DOCUMENT_ROOT'] ?? '';
 
@@ -50,7 +50,7 @@ class ListEnvVarsTool
 
         ksort($vars);
 
-        return $vars;
+        return json_encode($vars, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 
     private function maskSensitive(string $key, string $value): string

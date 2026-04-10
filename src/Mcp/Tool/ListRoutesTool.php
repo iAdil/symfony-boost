@@ -15,7 +15,7 @@ class ListRoutesTool
     ) {
     }
 
-    public function __invoke(?string $filter = null): array
+    public function __invoke(?string $filter = null): string
     {
         $routes = [];
 
@@ -37,6 +37,6 @@ class ListRoutesTool
 
         usort($routes, fn (array $a, array $b) => $a['name'] <=> $b['name']);
 
-        return $routes;
+        return json_encode($routes, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 }
