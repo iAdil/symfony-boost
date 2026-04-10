@@ -40,9 +40,9 @@ class SymfonyBoostExtension extends Extension
         $loader->load('services.yaml');
 
         if (!$config['browser_logs_watcher']) {
-            $container->removeDefinition('iadil_symfony_boost.browser_logger');
-            $container->removeDefinition('iadil_symfony_boost.event_listener.inject_browser_logger');
-            $container->removeDefinition('iadil_symfony_boost.controller.browser_log');
+            $container->removeDefinition(\IAdil\SymfonyBoostBundle\Service\BrowserLogger::class);
+            $container->removeDefinition(\IAdil\SymfonyBoostBundle\EventListener\InjectBrowserLoggerListener::class);
+            $container->removeDefinition(\IAdil\SymfonyBoostBundle\Controller\BrowserLogController::class);
         }
     }
 }
