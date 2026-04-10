@@ -24,6 +24,13 @@ class SkillComposer
     {
         $skills = [];
 
+        // 0. Built-in Symfony Boost skills
+        $builtInDir = \dirname(__DIR__, 2).'/resources/skills';
+
+        if (is_dir($builtInDir)) {
+            $skills = array_merge($skills, $this->discoverSkillsInDirectory($builtInDir, 'symfony-boost'));
+        }
+
         // 1. Discover from vendor packages (Composer)
         $composerSkills = $this->composer->getInstalledPackagesWithBoostSkills();
 

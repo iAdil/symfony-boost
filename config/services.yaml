@@ -31,6 +31,14 @@ services:
     IAdil\SymfonyBoostBundle\Mcp\Tool\LastErrorTool: ~
     IAdil\SymfonyBoostBundle\Mcp\Tool\ReadLogEntriesTool: ~
 
+    # New tools
+    IAdil\SymfonyBoostBundle\Mcp\Tool\ListRoutesTool: ~
+    IAdil\SymfonyBoostBundle\Mcp\Tool\GetConfigValueTool: ~
+    IAdil\SymfonyBoostBundle\Mcp\Tool\ListEnvVarsTool: ~
+    IAdil\SymfonyBoostBundle\Mcp\Tool\RunConsoleTool: ~
+    IAdil\SymfonyBoostBundle\Mcp\Tool\ListBundlesTool: ~
+    IAdil\SymfonyBoostBundle\Mcp\Tool\TableRowCountTool: ~
+
     IAdil\SymfonyBoostBundle\Mcp\Tool\SearchDocsTool:
         arguments:
             $apiUrl: '%iadil_symfony_boost.hosted.api_url%'
